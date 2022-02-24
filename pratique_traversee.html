@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="pratique_traversee.css">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <div class="tree">
+        <ul>
+            <li>
+                <a id="dhome" href="#" class="folder here">home</a>
+                <ul>
+                    
+                    <li>
+                        <a  id="dwww-ens"  href="#" class="folder">www-ens</a>
+                        <ul>
+                            <ul>
+                                <li>
+                                    <a  id="dtonusername"  href="#" class="folder">tonusername</a>
+                                    <ul>
+                                        <li>
+                                            <a  id="dpublic_html"  href="#" class="folder">public_html</a>
+                                            <ul>
+                                                <li>
+                                                    <a id="dift1005" href="#" class="folder">ift1005</a>
+                                                </li>
+                                                <li>
+                                                    <a id="findex-html" href="#">index.html</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="folder">HTML</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="folder">web_log</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="folder">www</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div id="interactions">
+        <h4>Bouttons</h4>
+        <form action="#">
+            <!-- <label for="com">Commande</label> -->
+            <select name="commande" id="com">
+              <option value="cd">cd</option>
+              <option value="chmod-644">chmod 644</option>
+              <option value="chmod-744">chmod 744</option>
+              <option value="chmod-777">chmod 777</option>
+              <option value="mkdir">mkdir</option>
+              <option value="rm">rm</option>
+              <option value="touch">touch</option>
+            </select>
+
+
+            <!-- <label for="com">Affectation</label> -->
+            <select name="affectation" id="aff">
+              <option value="..">..</option>
+              <option value="home">home</option>
+              <option value="www-ens">www-ens</option>
+              <option value="tonusername">tonusername</option>
+             
+              <option value="public_html">public_html</option>
+              <option value="ift1005">ift1005</option>
+              <option value="index.html">index.html</option>
+            </select>
+            <input value="Envoyer commande" onclick="processCommand()"/>
+      </form>
+        
+    </div>
+
+    <script>
+        let currentActive = null;
+        class Optionny {
+            constructor(name){
+                this.name = name;
+                this.val = name;
+            }
+        }
+        class Nodey {
+            constructor(name, children=[]){
+                this.name = name;
+                this.fullname = name;
+                let id = name;
+                if (id.includes(".")){
+                    id = id.replace(".","-");
+                }
+                this.id = id;
+                this.children = [];
+                for(var i = 0; i < children.length; i++){
+                    this.addChild(children[i]);
+                }
+                this.active = false;
+            }
+            setFullname(fullname){
+                this.fullname = fullname;
+            }
+            setActive(activity) {
+                this.active = activity;
+                if(activity){
+                    var elem = document.getElementById(id);
+                    var activeElems = document.getElementsByClassName("here");
+                    // remove all other elements who are active
+                    for (var i = 0; i < activeElems.length; i++){
+                        activeElems[i].classList.remove("here"); 
+                    }
+                    elem.classList.add("here"); 
+                    if (currentActive != null){
+                        currentActive.setActive(false);
+                    }
+                    currentActive = this;
+                    clearOptions();
+                    let descendants = this.getDescendants();
+                    for(var i = 0; i < descendants.length; i++){
+                        let curr = new Optionny(descendants[i].fullname);
+                        addOption(curr);
+                    }
+                }
+            }
+            getDescendants() {
+                let descendants = [];
+                for (var i = 0; i < this.children.length; i++){
+                    descendants.append(this.children[i]);
+                    // this.children[i].fullname = this.fullname + "/" + this.children[i].name;
+                    grandChildren = this.children[i].getDescendants();
+                    for (var j = 0; j < grandChildren.length; j++){
+                        descendants.append(grandChildren[j]);
+                    }
+                }
+                return children;
+            }
+            addChild(child){
+                child.setFullname = this.fullname + "/" + child.name;
+                this.children.append(child);
+            }
+            removeChild(child){
+                this.children.remove(child);
+            }
+            findChild(childName){
+                let descendants = this.getDescendants();
+                for (var i = 0; i < descendants.length; i++){
+                    if (descendants[i].name === childName){
+                        return descendants[i];
+                    }
+                }
+                return null;
+            }
+        }
+        // let devoir3 = new Optionny("devoir3.html");
+        function clearOptions(){
+            var x = document.getElementById("aff");
+            while (x.length > 0) {
+            x.remove(x.length-1);
+            }
+        }
+        function addOption(opt){
+            var optionn = document.createElement("option");
+            optionn.text = opt.name;
+            var aff = document.getElementById("aff");
+            aff.add(optionn);
+
+        }
+        function get(id_name){
+            return document.getElementById(id_name);
+        }
+        let root = new Nodey("root");
+        let a = new Nodey("a");
+        let b = new Nodey("b");
+        let c = new Nodey("d");
+
+        // function add(type, name){
+        //     if(type == "folder"){
+        //         ;
+        //     }
+        //     else{
+        //         ;
+        //     }
+        // }
+        window.onload = function() {
+            // clearOptions();
+            addOption(devoir3);
+        }
+        function processCommand(){
+            let command = document.getElementById("com").value;
+            alert(command);
+        }
+    </script>
+
+
+</body>
+
+</html>
